@@ -33,7 +33,9 @@ class VlcBitmap extends Bitmap
 	public var repeat:Int = 0;
 	public var duration:Float;
 	public var length:Float;
+	public var inWindow:Bool;
 	public var initComplete:Bool;
+	public var fullscreen:Bool;
 	public var volume(default, set):Float = 1;
 
 	public var isDisposed:Bool;
@@ -147,10 +149,22 @@ class VlcBitmap extends Bitmap
 	{
 		libvlc.setRepeat(repeat);
 
-		if (source != null)
-			libvlc.play(source);
+		if (!inWindow)
+		{
+			if (source != null)
+				libvlc.play(source);
+			else
+				libvlc.play();
+		}
 		else
-			libvlc.play();
+		{
+			if (source != null)
+				libvlc.playInWindow(source);
+			else
+				libvlc.playInWindow();
+
+			libvlc.setWindowFullscreen(fullscreen);
+		}
 
 		if (onPlay != null)
 			onPlay();
